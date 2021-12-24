@@ -79,11 +79,19 @@ func consume() error {
 
 func processMessage(payload *server.Payload) {
 
+	isProcessable := isProcessableMessage(payload)
+
+	if !isProcessable {
+		log.Info().Msgf("found a message that is not processable %v", payload)
+		return
+	}
+
 	serverType, err := server.TypeForProductSlug(payload.ProductSlug)
 	if err != nil {
 		log.Error().Err(err).Msgf("did not found a server type for product slug")
 		return
 	}
+
 	s := server.ServerType{
 		Type:            serverType,
 		UserId:          payload.UserId,
@@ -97,4 +105,21 @@ func processMessage(payload *server.Payload) {
 	if err != nil {
 		log.Error().Err(err).Msgf("there was an error when creating iac")
 	}
+}
+
+func isProcessableMessage(payload *server.Payload) bool {
+
+	parsedAmount, err := strconv.Atoi(payload.Amount)
+
+	if err != nil {
+		log.Warn().Msgf("amount is not a number for payload %v", payload)
+		return false
+	}
+
+	if parsedAmount > 0 {
+		log.Info().Msgf("found message with positive amount, skip it")
+		return false
+	}
+
+	return true
 }
