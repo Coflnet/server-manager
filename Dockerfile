@@ -16,4 +16,4 @@ FROM alpine:3.14
 
 COPY --from=builder /app/server-manager /usr/local/bin/server-manager
 
-CMD server-mananger
+CMD server-manager
