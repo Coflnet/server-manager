@@ -22,10 +22,10 @@ type ServerType struct {
 	Ip                  string              `json:"ip" bson:"ip"`
 	Status              string              `json:"status" bson:"status"`
 	UserId              string              `json:userId bson:"user_id"`
-	AuthenticationToken string              `json:"authentication_token" bson:"authentication_token"`
+	AuthenticationToken string              `json:"authenticationToken" bson:"authentication_token"`
 	InstanceId          pulumi.StringOutput `bson:"instance_id"`
-	CreatedAt           time.Time           `json:"created_at" bson:"created_at"`
-	PlannedShtudown     time.Time           `json:"planned_shutdown" bson:"planned_shutdown"`
+	CreatedAt           time.Time           `json:"createdAt" bson:"created_at"`
+	PlannedShtudown     time.Time           `json:"plannedShutdown" bson:"planned_shutdown"`
 }
 
 type Payload struct {
