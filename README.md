@@ -20,16 +20,16 @@ example response
 ```
 [
 	{
-		"ID": "61cd86bf96bcba4abbdd005f",
-		"type": "e2-micro",
-		"name": "bneuxtcoop",
-		"ip": "35.238.115.209",
-		"status": "ok",
-		"UserId": "",
-		"authentication_token": "lgwecqinimxqwtronysi",
+		"ID": "61cdad3bb9c351e933ff6c58",
+		"type": "c2-standard-4",
+		"name": "dpdreurwjp",
+		"ip": "",
+		"status": "creating",
+		"UserId": "userIdExample",
+		"authenticationToken": "txieaweukxavtpzrgdwf",
 		"InstanceId": {},
-		"created_at": "2021-12-30T10:15:27.078Z",
-		"planned_shutdown": "2021-12-24T19:14:43.469Z"
+		"createdAt": "2021-12-30T12:59:39.139Z",
+		"plannedShutdown": "2021-12-30T12:53:43.469Z"
 	}
 ]
 ```
@@ -44,8 +44,8 @@ example request
 ```
 {
 	"type": "e2-micro",
-	"planned_shutdown": "2021-12-24T19:14:43.469947584Z".
-  "userId": "random-string"
+	"plannedShutdown": "2021-12-24T19:14:43.469947584Z".
+  	"userId": "random-string"
 }
 ```
 
@@ -73,7 +73,7 @@ example request
 ```
 {
 	"id": "619031ce1640d001136a4345",
-	"planned_shutdown": "2022-11-13T19:14:43.469947584Z"
+	"plannedShutdown": "2022-11-13T19:14:43.469947584Z"
 }
 ```
 
