@@ -57,22 +57,33 @@ func Update(servers []*server.ServerType) error {
 			sudo echo "install docker.." > status.txt
 			sudo apt-get update 
 			sudo apt-get install ca-certificates curl gnupg lsb-release libcurl3-gnutls apt-transport-https -y
-			curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-			echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+			curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+			echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 			sudo apt-get update
 			sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 			sudo echo "run docker.." > status.txt
 			sudo docker pull ekwav/sky-benchmark
-			sudo docker run -d -e SNIPER_DATA_USERNAME=%s -e SNIPER_DATA_PASSWORD=%s -e MOD_AUTHENTICATION_TOKEN=%s ekwav/sky-benchmark
+			sudo docker run -d --restart unless-stopped -e SNIPER_DATA_USERNAME=%s -e SNIPER_DATA_PASSWORD=%s -e MOD_AUTHENTICATION_TOKEN=%s ekwav/sky-benchmark
 			sudo echo "installed" > status.txt
 			`, username, password, s.AuthenticationToken)
 
 			fmt.Println(startupScript)
 
+			nicType := pulumi.String("VIRTIO_NET")
+			networkPerformanceArgs := &compute.InstanceNetworkPerformanceConfigArgs{
+				TotalEgressBandwidthTier: pulumi.String("DEFAULT"),
+			}
+			if server.IsServer100Gbit(s.Type) {
+				nicType = pulumi.String("GVNIC")
+				networkPerformanceArgs = &compute.InstanceNetworkPerformanceConfigArgs{
+					TotalEgressBandwidthTier: pulumi.String("TIER_1"),
+				}
+			}
+
 			inst, err := compute.NewInstance(ctx, s.Name, &compute.InstanceArgs{
 				BootDisk: &compute.InstanceBootDiskArgs{
 					InitializeParams: &compute.InstanceBootDiskInitializeParamsArgs{
-						Image: pulumi.String("debian-cloud/debian-9"),
+						Image: pulumi.String("ubuntu-os-cloud/ubuntu-2004-lts"),
 					},
 				},
 				MachineType: pulumi.String(s.Type),
@@ -83,9 +94,11 @@ func Update(servers []*server.ServerType) error {
 						AccessConfigs: &compute.InstanceNetworkInterfaceAccessConfigArray{
 							&compute.InstanceNetworkInterfaceAccessConfigArgs{},
 						},
+						NicType: nicType,
 					},
 				},
-				MetadataStartupScript: pulumi.String(startupScript),
+				NetworkPerformanceConfig: networkPerformanceArgs,
+				MetadataStartupScript:    pulumi.String(startupScript),
 			},
 				pulumi.DependsOn([]pulumi.Resource{computeFirewall}),
 			)

@@ -35,16 +35,19 @@ func startWatch() error {
 	return nil
 }
 
-func checkServer(server *server.ServerType) error {
-	log.Info().Msgf("check server %s for shutdown", server.ID)
-
-	if server.PlannedShtudown.After(time.Now()) {
-		log.Info().Msgf("server %s is not ready for shutdown, scheduled shutdown %s", server.ID, server.PlannedShtudown)
+func checkServer(s *server.ServerType) error {
+	if s.PlannedShtudown.After(time.Now()) {
+		log.Info().Msgf("server %s is not ready for shutdown, scheduled shutdown %s", s.ID, s.PlannedShtudown)
 		return nil
 	}
 
-	log.Info().Msgf("server %s is ready for shutdown", server.ID)
-	_, err := iac.Destroy(server)
+	if s.Status == server.STATUS_DELETING {
+		log.Info().Msgf("server %s is already in status %s", s.ID, server.STATUS_DELETING)
+		return nil
+	}
+
+	log.Info().Msgf("server %s is ready for shutdown", s.ID)
+	_, err := iac.Destroy(s)
 
 	if err != nil {
 		return err

@@ -19,6 +19,7 @@ func Create(c *fiber.Ctx) error {
 
 	if serverType.PlannedShtudown.Before(time.Now()) {
 		log.Warn().Msgf("planned shutdown for server %s is before now %v", serverType.Type, serverType.PlannedShtudown)
+		return nil
 	}
 
 	log.Info().Msgf("creating a server of type %s", serverType.Type)

@@ -54,3 +54,15 @@ func TypeForProductSlug(slug string) (string, error) {
 
 	return "", fmt.Errorf("no server found for slug")
 }
+
+func IsServer100Gbit(typeOfServer string) bool {
+	if typeOfServer == "n2-highcpu-80" {
+		return true
+	}
+
+	if typeOfServer == "c2-standard-60" {
+		return true
+	}
+
+	return false
+}
