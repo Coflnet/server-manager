@@ -16,6 +16,7 @@ func Create(server *server.ServerType) (*server.ServerType, error) {
 
 	server.ID = primitive.NewObjectID()
 	server.Name = createRandomString(10)
+	server.AuthenticationToken = createRandomString(20)
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	res, err := serverCollection.InsertOne(ctx, server)

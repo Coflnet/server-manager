@@ -16,15 +16,16 @@ const (
 )
 
 type ServerType struct {
-	ID              primitive.ObjectID  `bson:"_id"`
-	Type            string              `json:"type" bson:"type"`
-	Name            string              `json:"name" bson:"name"`
-	Ip              string              `json:"ip" bson:"ip"`
-	Status          string              `json:"status" bson:"status"`
-	UserId          string              `json:userId bson:"user_id"`
-	InstanceId      pulumi.StringOutput `bson:"instance_id"`
-	CreatedAt       time.Time           `json:"created_at" bson:"created_at"`
-	PlannedShtudown time.Time           `json:"planned_shutdown" bson:"planned_shutdown"`
+	ID                  primitive.ObjectID  `bson:"_id"`
+	Type                string              `json:"type" bson:"type"`
+	Name                string              `json:"name" bson:"name"`
+	Ip                  string              `json:"ip" bson:"ip"`
+	Status              string              `json:"status" bson:"status"`
+	UserId              string              `json:userId bson:"user_id"`
+	AuthenticationToken string              `json:"authentication_token" bson:"authentication_token"`
+	InstanceId          pulumi.StringOutput `bson:"instance_id"`
+	CreatedAt           time.Time           `json:"created_at" bson:"created_at"`
+	PlannedShtudown     time.Time           `json:"planned_shutdown" bson:"planned_shutdown"`
 }
 
 type Payload struct {
@@ -41,6 +42,14 @@ type Payload struct {
 func TypeForProductSlug(slug string) (string, error) {
 	if slug == "sniper-small" {
 		return "e2-micro", nil
+	}
+
+	if slug == "sniper-medium" {
+		return "n2-highcpu-8", nil
+	}
+
+	if slug == "sniper-big" {
+		return "c2-standard-30", nil
 	}
 
 	return "", fmt.Errorf("no server found for slug")

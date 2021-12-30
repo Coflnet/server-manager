@@ -17,6 +17,8 @@ func Init() {
 }
 
 func executeIac(destroy bool, deployFunc func(ctx *pulumi.Context) error) error {
+	log.Info().Msgf("set lock")
+	wg.Add(1)
 	projectName := "skyblock-300817"
 	stackName := "prod"
 	ctx := context.Background()
@@ -44,13 +46,15 @@ func executeIac(destroy bool, deployFunc func(ctx *pulumi.Context) error) error 
 			log.Error().Err(err).Msgf("Failed to destroy stack %s", stackName)
 		}
 		log.Info().Msg("Stack successfully destroyed")
+		wg.Done()
 		return nil
 	}
 
 	// deploy the stack
-	upRes, err := stack.Up(ctx, optup.ProgressStreams(os.Stdout))
+	res, err := stack.Up(ctx, optup.ProgressStreams(os.Stdout))
 
-	log.Info().Msgf("res: %v", upRes)
+	log.Info().Msgf("finished update (%s), release lock", res.Summary.Kind)
+	wg.Done()
 
 	return nil
 }

@@ -39,7 +39,7 @@ func checkServer(server *server.ServerType) error {
 	log.Info().Msgf("check server %s for shutdown", server.ID)
 
 	if server.PlannedShtudown.After(time.Now()) {
-		log.Info().Msgf("server %s is not ready for shutdown", server.ID)
+		log.Info().Msgf("server %s is not ready for shutdown, scheduled shutdown %s", server.ID, server.PlannedShtudown)
 		return nil
 	}
 
