@@ -83,8 +83,10 @@ prometheus metrics available on port 3001 /metrics
 
 ## additional information
 
-two env vars are set for the running container in gcp
+three env vars are set for the running container in gcp
 
 first is `SNIPER_DATA_USERNAME` the second env var is `SNIPER_DATA_PASSWORD`
+
+third is `MOD_AUTHENTICATION_TOKEN` random token to authenticate mod connections
 
 this variables should be used to download sniper data from the "main" cluster.
