@@ -11,7 +11,9 @@ GET /list
 list all servers
 
 UserId is the same as given in kafka message or api request
+
 authentication_token are 20 random characters
+
 status can be `creating`, `ok`, `deleting`
 
 example response
@@ -82,5 +84,7 @@ prometheus metrics available on port 3001 /metrics
 ## additional information
 
 two env vars are set for the running container in gcp
+
 first is `SNIPER_DATA_USERNAME` the second env var is `SNIPER_DATA_PASSWORD`
+
 this variables should be used to download sniper data from the "main" cluster.
