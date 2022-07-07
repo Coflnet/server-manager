@@ -13,6 +13,4 @@ sync:
 - .:/usr/src/app
 workdir: /usr/src/app
 forward:
-- 3000:3000
-- 3001:3001
-
+- 8080:8080

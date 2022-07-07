@@ -1,12 +1,8 @@
 package metrics
 
-//TODO this
-
 import (
 	"net/http"
-	"server-manager/mongo"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -18,34 +14,30 @@ var (
 		Name: "server_manager_active_servers",
 		Help: "The total number of processed events",
 	})
+
+	errorCounter = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "server_manager_error_counter",
+		Help: "A counter for errors that should be investigated",
+	})
 )
 
 func StartMetrics() {
 	http.Handle("/metrics", promhttp.Handler())
 	log.Info().Msgf("starting metrics on port 3001")
-	UpdateActiveServers()
-	http.ListenAndServe(":3001", nil)
-}
-
-func SetActiveServers(newCount int) {
-	activeServers.Set(float64(newCount))
-}
-
-func UpdateActiveServers() {
-	servers, err := mongo.List()
+	err := http.ListenAndServe(":3001", nil)
 	if err != nil {
-		log.Error().Err(err).Msgf("error when listing servers for metrics")
-		return
+		log.Panic().Err(err).Msgf("error starting metrics")
 	}
-	SetActiveServers(len(servers))
 }
 
-func Healthz(c *fiber.Ctx) error {
+func AddServer() {
+	activeServers.Inc()
+}
 
-	_, err := mongo.List()
-	if err != nil {
-		return err
-	}
+func RemoveServer() {
+	activeServers.Dec()
+}
 
-	return nil
+func ErrorOccurred() {
+	errorCounter.Inc()
 }
