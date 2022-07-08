@@ -17,6 +17,8 @@ func Start() error {
 
 	r.POST("/extend", extendServer)
 
+	r.GET("/status", status)
+
 	log.Info().Msg("starting api")
 	return r.Run()
 }

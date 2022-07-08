@@ -27,6 +27,8 @@ func RequestServerCreation(request *model.ServerRequest) (*model.Server, error) 
 		return nil, err
 	}
 
+	go metrics.UpdateActiveServers()
+
 	return server, nil
 }
 

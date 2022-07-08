@@ -3,6 +3,7 @@ package usecase
 import (
 	"fmt"
 	"server-manager/internal/iac"
+	"server-manager/internal/metrics"
 	"server-manager/internal/model"
 	"server-manager/internal/mongo"
 
@@ -54,6 +55,8 @@ func DestroyServer(server *model.Server) error {
 		log.Error().Err(err).Msgf("there was an error when changing the state of server %s to %s", server.Name, model.ServerStatusDeleted)
 		return err
 	}
+
+	go metrics.UpdateActiveServers()
 
 	return nil
 }

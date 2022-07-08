@@ -1,12 +1,12 @@
 package metrics
 
 import (
-	"net/http"
-
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog/log"
+	"net/http"
+	"server-manager/internal/mongo"
 )
 
 var (
@@ -30,14 +30,18 @@ func StartMetrics() {
 	}
 }
 
-func AddServer() {
-	activeServers.Inc()
-}
-
-func RemoveServer() {
-	activeServers.Dec()
-}
-
 func ErrorOccurred() {
 	errorCounter.Inc()
+}
+
+func UpdateActiveServers() {
+
+	amount, err := mongo.ListActiveServers()
+	if err != nil {
+		log.Error().Err(err).Msg("there was an error when updating the active servers")
+		ErrorOccurred()
+		return
+	}
+
+	activeServers.Set(float64(len(amount)))
 }

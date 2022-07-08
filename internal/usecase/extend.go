@@ -1,14 +1,32 @@
 package usecase
 
 import (
-	"github.com/rs/zerolog/log"
+	"fmt"
 	"server-manager/internal/model"
+	"server-manager/internal/mongo"
 	"time"
 )
 
-func extendServer(server *model.Server, duration time.Duration) error {
+func ExtendServer(server *model.Server, duration time.Duration) error {
 
-	log.Warn().Msgf("extending server is not implemented")
+	if duration.Seconds() < 0 {
+		return fmt.Errorf("duration must be positive")
+	}
+
+	currentShutdown := server.PlannedShutdown
+
+	newShutdown := currentShutdown.Add(duration)
+	timeInOneDay := time.Now().Add(time.Hour * 24)
+
+	if newShutdown.After(timeInOneDay) {
+		return fmt.Errorf("new shutdown time is more than 24 hours in the future, %s", newShutdown.Format(time.RFC3339))
+	}
+
+	server.PlannedShutdown = &newShutdown
+	err := mongo.UpdatePlannedShutdown(server)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
