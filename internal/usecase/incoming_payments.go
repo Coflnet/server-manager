@@ -79,7 +79,18 @@ func processPaymentPayload(payload *model.PaymentPayload) error {
 }
 
 func shouldServerCreatedForPayload(payload *model.PaymentPayload) bool {
-	// TODO implement that
+
+	parsedAmount, err := strconv.Atoi(payload.Amount)
+
+	if err != nil {
+		// amount can not be parsed, therefore no server should be created
+		return false
+	}
+
+	if parsedAmount > 0 {
+		// amount is positive, therefore no server should be created
+		return false
+	}
 
 	return true
 }

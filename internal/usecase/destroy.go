@@ -28,6 +28,8 @@ func DestroyRequest(request *model.ServerRequest) error {
 
 func DestroyServer(server *model.Server) error {
 
+	log.Info().Msgf("destroying server %s", server.Name)
+
 	// check if the server can be deleted
 	err := CanSeverBeDestroyed(server)
 	if err != nil {
@@ -36,11 +38,13 @@ func DestroyServer(server *model.Server) error {
 	}
 
 	// trigger the state change
-	err = serverDestroyingState(server)
-	if err != nil {
-		log.Error().Err(err).Msgf("there was an error when changing the state of server %s to %s", server.Name, model.ServerStatusDeleting)
-		return err
-	}
+	go func() {
+		err = serverDestroyingState(server)
+		if err != nil {
+			log.Error().Err(err).Msgf("there was an error when changing the state of server %s to %s", server.Name, model.ServerStatusDeleting)
+			metrics.ErrorOccurred()
+		}
+	}()
 
 	// destroy the server
 	server, err = destroyServer(server)
@@ -50,11 +54,13 @@ func DestroyServer(server *model.Server) error {
 	}
 
 	// trigger the state change
-	err = serverDestroyedState(server)
-	if err != nil {
-		log.Error().Err(err).Msgf("there was an error when changing the state of server %s to %s", server.Name, model.ServerStatusDeleted)
-		return err
-	}
+	go func() {
+		err = serverDestroyedState(server)
+		if err != nil {
+			log.Error().Err(err).Msgf("there was an error when changing the state of server %s to %s", server.Name, model.ServerStatusDeleted)
+			metrics.ErrorOccurred()
+		}
+	}()
 
 	go metrics.UpdateActiveServers()
 

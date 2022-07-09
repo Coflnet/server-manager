@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"server-manager/internal/metrics"
 	"server-manager/internal/model"
 	"server-manager/internal/mongo"
 	"time"
@@ -14,6 +15,7 @@ func PlannedShutdownSchedule() {
 		err := checkForServersToShutdown()
 		if err != nil {
 			log.Error().Err(err).Msgf("there was an error when checking for servers to shutdown")
+			metrics.ErrorOccurred()
 		}
 	}
 }

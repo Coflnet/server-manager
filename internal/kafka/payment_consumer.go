@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog/log"
-	kafka "github.com/segmentio/kafka-go"
+	"github.com/segmentio/kafka-go"
 )
 
 var (

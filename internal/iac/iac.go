@@ -18,9 +18,11 @@ func Create(s *model.Server) (*model.Server, error) {
 	} else if s.Type.IsHetznerServer() {
 		err = UpdateHetznerStack()
 
-		// kina hacky way to execute a startup script
+		// hacky way to execute a startup script
+		// sadly hetzner does not support a startup script
+		// ssh to hetzner instance and execute the script that way
 		go func(hetznerServer *model.Server) {
-			time.Sleep(time.Minute * 1)
+			time.Sleep(time.Second * 40)
 			log.Info().Msg("starting the hetzner server script")
 
 			err := hetznerStarupScript(hetznerServer)
@@ -82,7 +84,7 @@ func startupScript(s *model.Server) string {
 	)
 }
 
-// basically the same as startup script but a sinlge command
+// basically the same as startup script but a single command
 // hetzner does not support the thing above
 func startupCommand(s *model.Server) string {
 	return fmt.Sprintf(`#!/bin/bash

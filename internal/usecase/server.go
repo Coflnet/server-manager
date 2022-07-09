@@ -18,7 +18,7 @@ func calculatePlannedShutdown(t *model.ServerType, d time.Duration) (time.Time, 
 	result := time.Now()
 
 	result = result.Add(d)
-	log.Debug().Msgf("adding %d mins to planned shutdown as owned time; res = %s", d.Minutes(), result.Format(time.RFC3339))
+	log.Debug().Msgf("adding %d minutes to planned shutdown as owned time; res = %s", d.Minutes(), result.Format(time.RFC3339))
 
 	creationTime, err := t.CreationTime()
 	if err != nil {
@@ -26,7 +26,7 @@ func calculatePlannedShutdown(t *model.ServerType, d time.Duration) (time.Time, 
 	}
 
 	result = result.Add(creationTime)
-	log.Debug().Msgf("add a creation time of %d mins to the planned shutdown; res = %s", creationTime.Minutes(), result.Format(time.RFC3339))
+	log.Debug().Msgf("add a creation time of %d minutes to the planned shutdown; res = %s", creationTime.Minutes(), result.Format(time.RFC3339))
 
 	return result, nil
 }

@@ -15,6 +15,16 @@ var (
 		Help: "The total number of processed events",
 	})
 
+	googleUpdates = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "server_manager_google_updates",
+		Help: "The total number of google updates",
+	})
+
+	hetznerUpdates = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "server_manager_hetzner_updates",
+		Help: "The total number of hetzner updates",
+	})
+
 	errorCounter = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "server_manager_error_counter",
 		Help: "A counter for errors that should be investigated",
@@ -44,4 +54,12 @@ func UpdateActiveServers() {
 	}
 
 	activeServers.Set(float64(len(amount)))
+}
+
+func IncGoogleUpdates() {
+	googleUpdates.Inc()
+}
+
+func IncHetznerUpdates() {
+	hetznerUpdates.Inc()
 }

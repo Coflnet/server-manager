@@ -8,6 +8,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	"github.com/rs/zerolog/log"
 	"os"
+	"server-manager/internal/metrics"
 	"server-manager/internal/model"
 	"server-manager/internal/mongo"
 	"sync"
@@ -75,6 +76,8 @@ func UpdateGoogleStack() error {
 	if err != nil {
 		return err
 	}
+
+	go metrics.IncGoogleUpdates()
 
 	log.Info().Msgf("google stack successfully updated\n%s", res.Summary)
 	return nil
@@ -165,10 +168,20 @@ func deploymentFunc(c *pulumi.Context) error {
 }
 
 func nicTypeForServer(s *model.Server) pulumi.StringPtrInput {
+	if s.Type.Is100GbitServer() {
+		return pulumi.String("GVNIC")
+	}
 	return pulumi.String("VIRTIO_NET")
 }
 
 func networkPerformanceArgs(s *model.Server) *compute.InstanceNetworkPerformanceConfigArgs {
+
+	if s.Type.Is100GbitServer() {
+		return &compute.InstanceNetworkPerformanceConfigArgs{
+			TotalEgressBandwidthTier: pulumi.String("TIER_1"),
+		}
+	}
+
 	return &compute.InstanceNetworkPerformanceConfigArgs{
 		TotalEgressBandwidthTier: pulumi.String("DEFAULT"),
 	}
@@ -193,16 +206,6 @@ func activeGoogleServers() ([]*model.Server, error) {
 	}
 
 	return model.FilterGoogleServers(servers), nil
-}
-
-func pulumiGoogleProjectName() string {
-	p := os.Getenv("PULUMI_GOOGLE_PROJECT_NAME")
-
-	if p == "" {
-		log.Panic().Msg("PULUMI_GOOGLE_PROJECT_NAME is not set")
-	}
-
-	return p
 }
 
 func pulumiGoogleStackName() string {

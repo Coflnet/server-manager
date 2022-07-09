@@ -11,6 +11,7 @@ import (
 	"golang.org/x/crypto/ssh"
 	"io/ioutil"
 	"os"
+	"server-manager/internal/metrics"
 	"server-manager/internal/model"
 	"server-manager/internal/mongo"
 	"sync"
@@ -66,6 +67,8 @@ func UpdateHetznerStack() error {
 		return err
 	}
 	log.Info().Msgf("hetzner stack successfully updated\n%s", res.Summary)
+
+	go metrics.IncHetznerUpdates()
 
 	return nil
 }
@@ -140,7 +143,7 @@ func hetznerStarupScript(s *model.Server) error {
 
 	log.Info().Msgf("created a session")
 
-	err = session.Run(startupScript(s))
+	err = session.Run(startupCommand(s))
 	if err != nil {
 		log.Error().Err(err).Msgf("unable to run startup script")
 		return err

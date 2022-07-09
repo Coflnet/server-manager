@@ -130,21 +130,3 @@ func UpdatePlannedShutdown(server *model.Server) error {
 
 	return nil
 }
-
-func DeleteServer(server *model.Server) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	r, err := serverCollection.DeleteOne(ctx, bson.M{"_id": server.ID})
-
-	if err != nil {
-		log.Error().Err(err).Msgf("error when deleting server %v %s", server.ID, server.Name)
-		return err
-	}
-
-	if r.DeletedCount == 0 {
-		log.Warn().Msgf("server %v %s not found", server.ID, server.Name)
-	}
-
-	return nil
-}

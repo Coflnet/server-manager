@@ -81,6 +81,19 @@ func (s *ServerType) IsGoogleServer() bool {
 	return false
 }
 
+func (s *ServerType) Is100GbitServer() bool {
+	if s.IsHetznerServer() {
+		return false
+	}
+
+	// maybe add a 100gbit flag to the server type
+	if s.TechnicalKey == "c2-standard-30" {
+		return true
+	}
+
+	return false
+}
+
 func (s *ServerType) CreationTime() (time.Duration, error) {
 	if s.IsGoogleServer() {
 		return time.Minute * 1, nil

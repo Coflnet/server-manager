@@ -63,15 +63,3 @@ func FilterHetznerServers(servers []*Server) []*Server {
 
 	return filteredServers
 }
-
-func IsServer100Gbit(typeOfServer string) bool {
-	if typeOfServer == "n2-highcpu-80" {
-		return true
-	}
-
-	if typeOfServer == "c2-standard-60" {
-		return true
-	}
-
-	return false
-}
