@@ -55,19 +55,25 @@ func UpdateGoogleStack() error {
 
 	err = s.SetConfig(ctx, "gcp:zone", auto.ConfigValue{Value: pulumiGoogleZone()})
 	if err != nil {
+		log.Error().Err(err).Msgf("there was a problem when configuring the gcp stack")
 		return err
 	}
 
 	err = s.SetConfig(ctx, "gcp:project", auto.ConfigValue{Value: pulumiGoogleProject()})
 	if err != nil {
+		log.Error().Err(err).Msgf("there was a problem when configuring the gcp project")
 		return err
 	}
+
+	log.Debug().Msg("stack successfully configured")
 
 	// refresh the current stack
 	_, err = s.Refresh(ctx)
 	if err != nil {
+		log.Error().Err(err).Msgf("there was a problem when refreshing the gcp stack")
 		return err
 	}
+	log.Debug().Msg("stack successfully refreshed")
 
 	// start iac
 	stdoutStreamer := optup.ProgressStreams(os.Stdout)
