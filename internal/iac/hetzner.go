@@ -32,7 +32,7 @@ func UpdateHetznerStack() error {
 	// start the stack config
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer cancel()
-	projectName := pulumiHetznerProject()
+	projectName := "bfcs-gcp"
 	stackName := pulumiHetznerStackName()
 
 	// update stack
@@ -197,14 +197,6 @@ func activeHetznerServers() ([]*model.Server, error) {
 	}
 
 	return model.FilterHetznerServers(servers), nil
-}
-
-func pulumiHetznerProject() string {
-	p := os.Getenv("PULUMI_HETZNER_PROJECT")
-	if p == "" {
-		log.Panic().Msg("PULUMI_HETZNER_PROJECT is not set")
-	}
-	return p
 }
 
 func pulumiHetznerStackName() string {

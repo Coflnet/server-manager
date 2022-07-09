@@ -29,7 +29,7 @@ func UpdateGoogleStack() error {
 	// start the stack config
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer cancel()
-	projectName := pulumiGoogleProject()
+	projectName := "bfcs-gcp"
 	stackName := pulumiGoogleStackName()
 	log.Debug().Msgf("configured gcp stack; project: %s, stack: %s", projectName, stackName)
 
