@@ -1,19 +1,17 @@
-FROM golang:1.16.6-alpine3.14 as builder
+FROM golang:1.18.3-bullseye as builder
 
-WORKDIR /app
+WORKDIR /build
 
-COPY go.mod .
-COPY go.sum .
+COPY go.mod go.sum ./
 
 RUN go mod download
 
 COPY . .
 
-RUN go build .
+RUN go build -o ./app cmd/server-manager/main.go
 
+FROM gcr.io/distroless/base-debian11
 
-FROM alpine:3.14
+COPY --from=builder /build/app /app
 
-COPY --from=builder /app/server-manager /usr/local/bin/server-manager
-
-CMD server-manager
+ENTRYPOINT ["/app"]
