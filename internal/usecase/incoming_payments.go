@@ -18,16 +18,20 @@ func IncomingPaymentsSchedule() {
 			continue
 		}
 
+		// try to deserialize the message
+		// when deserialization works, processPaymentPayload
+		// otherwise log an error
+		// but commit message legacy resasons
 		payload, err := deserializeMessage(msg)
 		if err != nil {
 			log.Error().Err(err).Msg("error deserializing payment payload")
-			continue
-		}
-
-		err = processPaymentPayload(payload)
-		if err != nil {
-			log.Error().Err(err).Msg("error processing payment payload")
-			continue
+			log.Info().Msgf("but commit the message")
+		} else {
+			err = processPaymentPayload(payload)
+			if err != nil {
+				log.Error().Err(err).Msg("error processing payment payload")
+				continue
+			}
 		}
 
 		err = kafka.CommitPaymentPayloadMessage(msg)
