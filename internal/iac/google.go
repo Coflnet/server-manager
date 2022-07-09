@@ -53,12 +53,12 @@ func UpdateGoogleStack() error {
 	// configure stack
 	log.Debug().Msgf("configuring stack with zone: %s, project: %s", pulumiGoogleZone(), pulumiGoogleProject())
 
-	err = s.SetConfig(ctx, "gcp:zone", auto.ConfigValue{Value: "us-central1-a"})
+	err = s.SetConfig(ctx, "gcp:zone", auto.ConfigValue{Value: pulumiGoogleZone()})
 	if err != nil {
 		return err
 	}
 
-	err = s.SetConfig(ctx, "gcp:project", auto.ConfigValue{Value: "skyblock-300817"})
+	err = s.SetConfig(ctx, "gcp:project", auto.ConfigValue{Value: pulumiGoogleProject()})
 	if err != nil {
 		return err
 	}
