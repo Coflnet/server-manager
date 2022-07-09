@@ -7,7 +7,13 @@ import (
 
 func Start() error {
 
-	r := gin.Default()
+	r := gin.New()
+
+	// dont log /status requests
+	r.Use(
+		gin.LoggerWithWriter(gin.DefaultWriter, "/status"),
+		gin.Recovery(),
+	)
 
 	r.Use(JSONMiddleware)
 
