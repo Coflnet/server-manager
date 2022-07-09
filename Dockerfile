@@ -10,7 +10,8 @@ COPY . .
 
 RUN go build -o ./app cmd/server-manager/main.go
 
-FROM gcr.io/distroless/base-debian11
+FROM pulumi/pulumi-go
+
 
 COPY --from=builder /build/app /app
 
