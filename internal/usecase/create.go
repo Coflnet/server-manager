@@ -50,6 +50,15 @@ func CreateServer(t *model.ServerType, userId string, duration time.Duration) (*
 		return nil, err
 	}
 
+	// request a state transfer token
+	token, err := CreateStateTransferToken()
+	if err != nil {
+		log.Error().Err(err).Msgf("there was an error when creating the state transfer token")
+		metrics.ErrorOccurred()
+		return nil, err
+	}
+	s.AuthenticationToken = token
+
 	// insert the database entity
 	err = mongo.InsertServer(s)
 	if err != nil {
@@ -102,7 +111,7 @@ func createServerForType(t *model.ServerType, userId string, duration time.Durat
 		CreatedAt:           timePtr(time.Now()),
 		PlannedShutdown:     &plannedShutdown,
 		UserId:              userId,
-		AuthenticationToken: createAuthenticationTokenForServer(),
+		AuthenticationToken: "",
 		Ip:                  "",
 	}
 

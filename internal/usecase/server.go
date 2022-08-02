@@ -3,7 +3,6 @@ package usecase
 import (
 	"fmt"
 	"github.com/rs/zerolog/log"
-	"math/rand"
 	"server-manager/internal/kafka"
 	"server-manager/internal/model"
 	"server-manager/internal/mongo"
@@ -29,10 +28,6 @@ func calculatePlannedShutdown(t *model.ServerType, d time.Duration) (time.Time, 
 	log.Debug().Msgf("add a creation time of %d minutes to the planned shutdown; res = %s", creationTime.Minutes(), result.Format(time.RFC3339))
 
 	return result, nil
-}
-
-func createAuthenticationTokenForServer() string {
-	return RandString(21)
 }
 
 func createServerName(t *model.ServerType, userId string) string {
@@ -71,22 +66,4 @@ func serverStateChanged(s *model.Server) error {
 
 func timePtr(t time.Time) *time.Time {
 	return &t
-}
-
-func RandString(n int) string {
-
-	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	const (
-		letterIdxBits = 6
-		letterIdxMask = 1<<letterIdxBits - 1
-	)
-
-	b := make([]byte, n)
-	for i := 0; i < n; {
-		if idx := int(rand.Int63() & letterIdxMask); idx < len(letterBytes) {
-			b[i] = letterBytes[idx]
-			i++
-		}
-	}
-	return string(b)
 }
