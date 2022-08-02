@@ -208,5 +208,5 @@ func deployServer(s *model.Server) (*model.Server, error) {
 
 func currentContainerImage() string {
 	// TODO implement this placeholder thing
-	return "harbor.flou.dev/coflnet/skybfcs:4a48ddc1-3f06-43c4-92b4-6109091afb98"
+	return "harbor.flou.dev/coflnet/skybfcs:3590ffdd-badb-4aba-9a11-bea3fb9306e7"
 }
