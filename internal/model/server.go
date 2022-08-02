@@ -29,6 +29,7 @@ type Server struct {
 	InstanceId          *pulumi.StringOutput `bson:"instance_id"`
 	CreatedAt           *time.Time           `json:"createdAt" bson:"created_at"`
 	PlannedShutdown     *time.Time           `json:"plannedShutdown" bson:"planned_shutdown"`
+	ContainerImage      string               `json:"containerImage" bson:"container_image"`
 }
 
 type ServerInvalidError struct {

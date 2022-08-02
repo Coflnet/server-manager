@@ -113,6 +113,7 @@ func createServerForType(t *model.ServerType, userId string, duration time.Durat
 		UserId:              userId,
 		AuthenticationToken: "",
 		Ip:                  "",
+		ContainerImage:      currentContainerImage(),
 	}
 
 	return &s, nil
@@ -203,4 +204,9 @@ func serverOkState(s *model.Server) error {
 func deployServer(s *model.Server) (*model.Server, error) {
 	s, err := iac.Create(s)
 	return s, err
+}
+
+func currentContainerImage() string {
+	// TODO implement this placeholder thing
+	return "harbor.flou.dev/coflnet/skybfcs:4a48ddc1-3f06-43c4-92b4-6109091afb98"
 }

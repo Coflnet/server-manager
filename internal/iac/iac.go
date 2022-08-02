@@ -78,9 +78,9 @@ func startupScript(s *model.Server) string {
 			sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 			sudo echo "run docker.." > status.txt
 			sudo docker pull ekwav/sky-benchmark
-			sudo docker run -d --restart unless-stopped -e SNIPER_DATA_USERNAME=%s -e SNIPER_DATA_PASSWORD=%s -e MOD_AUTHENTICATION_TOKEN=%s ekwav/sky-benchmark
+			sudo docker run -d --restart unless-stopped -e SNIPER_DATA_USERNAME=%s -e SNIPER_DATA_PASSWORD=%s -e MOD_AUTHENTICATION_TOKEN=%s %s
 			sudo echo "installed" > status.txt
-			`, sniperDataDownloadUsername(), sniperDataDownloadPassword(), s.AuthenticationToken,
+			`, sniperDataDownloadUsername(), sniperDataDownloadPassword(), s.AuthenticationToken, s.ContainerImage,
 	)
 }
 
