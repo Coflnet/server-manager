@@ -44,12 +44,6 @@ func CreateServer(t *model.ServerType, userId string, duration time.Duration) (*
 
 	log.Info().Msgf("server entity created witht the name %s", s.Name)
 
-	// validate server properties
-	if err = validateServer(s); err != nil {
-		log.Error().Err(err).Msgf("server %s is not valid, cannot create it", s.Name)
-		return nil, err
-	}
-
 	// request a state transfer token
 	token, err := CreateStateTransferToken()
 	if err != nil {
@@ -58,6 +52,12 @@ func CreateServer(t *model.ServerType, userId string, duration time.Duration) (*
 		return nil, err
 	}
 	s.AuthenticationToken = token
+
+	// validate server properties
+	if err = validateServer(s); err != nil {
+		log.Error().Err(err).Msgf("server %s is not valid, cannot create it", s.Name)
+		return nil, err
+	}
 
 	// insert the database entity
 	err = mongo.InsertServer(s)
