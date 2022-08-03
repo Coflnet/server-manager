@@ -1,11 +1,11 @@
 package usecase
 
 import (
+	"fmt"
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path"
 	"time"
 )
 
@@ -18,6 +18,8 @@ func CreateStateTransferToken() (string, error) {
 
 	client := http.DefaultClient
 	client.Timeout = time.Second * 10
+
+	log.Info().Msgf("using path: %s", sniperUrl())
 
 	resp, err := http.DefaultClient.Do(request)
 	if err != nil {
@@ -43,5 +45,5 @@ func sniperUrl() string {
 		log.Panic().Msg("SNIPER_BASE_URL is not set")
 	}
 
-	return path.Join(baseUrl, "/api/Sniper/token")
+	return fmt.Sprintf("%s/api/Sniper/token", sniperUrl())
 }
