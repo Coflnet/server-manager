@@ -49,5 +49,5 @@ func sniperUrl() string {
 		log.Panic().Msg("SNIPER_BASE_URL is not set")
 	}
 
-	return fmt.Sprintf("%s/api/Sniper/token", baseUrl)
+	return fmt.Sprintf("%sapi/Sniper/token", baseUrl)
 }
