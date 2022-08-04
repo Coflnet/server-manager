@@ -3,6 +3,7 @@ package usecase
 import (
 	"fmt"
 	"github.com/rs/zerolog/log"
+	"math/rand"
 	"server-manager/internal/kafka"
 	"server-manager/internal/model"
 	"server-manager/internal/mongo"
@@ -66,4 +67,22 @@ func serverStateChanged(s *model.Server) error {
 
 func timePtr(t time.Time) *time.Time {
 	return &t
+}
+
+func RandString(n int) string {
+
+	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	const (
+		letterIdxBits = 6
+		letterIdxMask = 1<<letterIdxBits - 1
+	)
+
+	b := make([]byte, n)
+	for i := 0; i < n; {
+		if idx := int(rand.Int63() & letterIdxMask); idx < len(letterBytes) {
+			b[i] = letterBytes[idx]
+			i++
+		}
+	}
+	return string(b)
 }

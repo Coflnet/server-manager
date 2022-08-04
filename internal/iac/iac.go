@@ -3,7 +3,6 @@ package iac
 import (
 	"fmt"
 	"github.com/rs/zerolog/log"
-	"os"
 	"server-manager/internal/model"
 	"server-manager/internal/mongo"
 	"time"
@@ -78,9 +77,9 @@ func startupScript(s *model.Server) string {
 			sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 			sudo echo "run docker.." > status.txt
 			sudo docker pull ekwav/sky-benchmark
-			sudo docker run -d --restart unless-stopped -e SNIPER_TRANSFER_TOKEN=%s %s
+			sudo docker run -d --restart unless-stopped -e MOD_AUTHENTICATION_TOKEN=%s -e SNIPER_TRANSFER_TOKEN=%s %s
 			sudo echo "installed" > status.txt
-			`, s.AuthenticationToken, s.ContainerImage,
+			`, s.AuthenticationToken, s.StateTransferToken, s.ContainerImage,
 	)
 }
 
@@ -97,28 +96,8 @@ func startupCommand(s *model.Server) string {
 			sudo apt-get install docker-ce docker-ce-cli containerd.io -y && \
 			sudo echo "run docker.." > status.txt && \
 			sudo docker pull ekwav/sky-benchmark && \
-			sudo docker run -d --restart unless-stopped -e SNIPER_DATA_USERNAME=%s -e SNIPER_DATA_PASSWORD=%s -e MOD_AUTHENTICATION_TOKEN=%s ekwav/sky-benchmark && \
+			sudo docker run -d --restart unless-stopped -e MOD_AUTHENTICATION_TOKEN=%s -e SNIPER_TRANSFER_TOKEN=%s %s && \
 			sudo echo "installed" > status.txt
-			`, sniperDataDownloadUsername(), sniperDataDownloadPassword(), s.AuthenticationToken,
+			`, s.AuthenticationToken, s.StateTransferToken, s.ContainerImage,
 	)
-}
-
-func sniperDataDownloadUsername() string {
-	u := os.Getenv("SNIPER_DATA_DOWNLOAD_USERNAME")
-
-	if u == "" {
-		log.Panic().Msg("SNIPER_DATA_DOWNLOAD_USERNAME is not set")
-	}
-
-	return u
-}
-
-func sniperDataDownloadPassword() string {
-	p := os.Getenv("SNIPER_DATA_DOWNLOAD_PASSWORD")
-
-	if p == "" {
-		log.Panic().Msg("SNIPER_DATA_DOWNLOAD_PASSWORD is not set")
-	}
-
-	return p
 }

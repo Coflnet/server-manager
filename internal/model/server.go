@@ -26,6 +26,7 @@ type Server struct {
 	Status              string               `json:"status" bson:"status"`
 	UserId              string               `json:"userId" bson:"user_id"`
 	AuthenticationToken string               `json:"authenticationToken" bson:"authentication_token"`
+	StateTransferToken  string               `json:"stateTransferToken" bson:"state_transfer_token"`
 	InstanceId          *pulumi.StringOutput `bson:"instance_id"`
 	CreatedAt           *time.Time           `json:"createdAt" bson:"created_at"`
 	PlannedShutdown     *time.Time           `json:"plannedShutdown" bson:"planned_shutdown"`

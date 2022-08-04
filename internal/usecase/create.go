@@ -51,7 +51,7 @@ func CreateServer(t *model.ServerType, userId string, duration time.Duration) (*
 		metrics.ErrorOccurred()
 		return nil, err
 	}
-	s.AuthenticationToken = token
+	s.StateTransferToken = token
 
 	// validate server properties
 	if err = validateServer(s); err != nil {
@@ -111,7 +111,8 @@ func createServerForType(t *model.ServerType, userId string, duration time.Durat
 		CreatedAt:           timePtr(time.Now()),
 		PlannedShutdown:     &plannedShutdown,
 		UserId:              userId,
-		AuthenticationToken: "",
+		AuthenticationToken: RandString(32),
+		StateTransferToken:  "",
 		Ip:                  "",
 		ContainerImage:      currentContainerImage(),
 	}
@@ -207,6 +208,5 @@ func deployServer(s *model.Server) (*model.Server, error) {
 }
 
 func currentContainerImage() string {
-	// TODO implement this placeholder thing
-	return "harbor.flou.dev/coflnet/skybfcs:3590ffdd-badb-4aba-9a11-bea3fb9306e7"
+	return "harbor.flou.dev/coflnet/skybfcs:latest"
 }
